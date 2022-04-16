@@ -1,0 +1,71 @@
+{
+    "events" : [
+        {
+            "id" : 1,
+            "name" : "Ruines d'Elveria",
+            "type" : "Donjon abyssal",
+            "tier" : "T1",
+            "capacity" : 4,
+            "ilvl" : 340,
+            "guides_url" : ["https://lost-ark.maxroll.gg/abyssal-dungeons/demon-beast-canyon",
+                            "https://lost-ark.maxroll.gg/abyssal-dungeons/necromancers-origin"],
+            "image_url" : "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.statically.io%2Fimg%2Ffextralife.com%2Fwp-content%2Fuploads%2F2022%2F03%2FGuardian-Raid-640x360.jpg&f=1&nofb=1"
+        },
+        {
+            "id" : 2,
+            "name" : "Palais des Spectres",
+            "type" : "Donjon abyssal",
+            "tier" : "T1",
+            "capacity" : 4,
+            "ilvl" : 460,
+            "guides_url" : ["https://lost-ark.maxroll.gg/abyssal-dungeons/hall-of-the-twisted-warlord",
+                            "https://lost-ark.maxroll.gg/abyssal-dungeons/hildebrandt-palace"],
+            "image_url" : "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.statically.io%2Fimg%2Ffextralife.com%2Fwp-content%2Fuploads%2F2022%2F03%2FGuardian-Raid-640x360.jpg&f=1&nofb=1"
+        },
+        {
+            "id" : 3,
+            "name" : "Arche d'Arrogance",
+            "type" : "Donjon abyssal",
+            "tier" : "T2",
+            "capacity" : 4,
+            "ilvl" : 840,
+            "guides_url" : ["https://lost-ark.maxroll.gg/abyssal-dungeons/road-of-lament",
+                            "https://lost-ark.maxroll.gg/abyssal-dungeons/forge-of-fallen-pride"],
+            "image_url" : "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.statically.io%2Fimg%2Ffextralife.com%2Fwp-content%2Fuploads%2F2022%2F03%2FGuardian-Raid-640x360.jpg&f=1&nofb=1"
+        },
+        {
+            "id" : 4,
+            "name" : "Porte du paradis",
+            "type" : "Donjon abyssal",
+            "tier" : "T2",
+            "capacity" : 8,
+            "ilvl" : 960,
+            "guides_url" : ["https://lost-ark.maxroll.gg/abyssal-dungeons/sea-of-indolence",
+                            "https://lost-ark.maxroll.gg/abyssal-dungeons/tranquil-karkosa",
+                            "https://lost-ark.maxroll.gg/abyssal-dungeons/alarics-sanctuary"],
+            "image_url" : "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.statically.io%2Fimg%2Ffextralife.com%2Fwp-content%2Fuploads%2F2022%2F03%2FGuardian-Raid-640x360.jpg&f=1&nofb=1"
+        },
+        {
+            "id" : 5,
+            "name" : "Puits d'Oreha (Normal)",
+            "type" : "Donjon abyssal",
+            "tier" : "T3",
+            "capacity" : 4,
+            "ilvl" : 1340,
+            "guides_url" : ["https://lost-ark.maxroll.gg/abyssal-dungeons/airas-oculus",
+                            "https://lost-ark.maxroll.gg/abyssal-dungeons/oreha-preveza"],
+            "image_url" : "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.statically.io%2Fimg%2Ffextralife.com%2Fwp-content%2Fuploads%2F2022%2F03%2FGuardian-Raid-640x360.jpg&f=1&nofb=1"
+        },
+        {
+            "id" : 6,
+            "name" : "Puits d'Oreha (Difficile)",
+            "type" : "Donjon abyssal",
+            "tier" : "T3",
+            "capacity" : 4,
+            "ilvl" : 1370,
+            "guides_url" : ["https://lost-ark.maxroll.gg/abyssal-dungeons/airas-oculus",
+                            "https://lost-ark.maxroll.gg/abyssal-dungeons/oreha-preveza"],
+            "image_url" : "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.statically.io%2Fimg%2Ffextralife.com%2Fwp-content%2Fuploads%2F2022%2F03%2FGuardian-Raid-640x360.jpg&f=1&nofb=1"
+        }
+    ]
+}
