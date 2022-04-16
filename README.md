@@ -50,7 +50,6 @@ To get your bot token, go on "Bot" section in the [Discord Developer Portal](htt
 To add your bot to your server, go on the "General" section, take your "application id" and replace it in this url :
 
 ```
-
 https://discord.com/api/oauth2/authorize?client_id=<app_id>&permissions=395137001472&scope=applications.commands%20bot
 ```
 
