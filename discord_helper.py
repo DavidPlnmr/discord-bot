@@ -9,7 +9,7 @@ import re
 import discord
 
 
-class DiscordHelper():
+class DiscordGroupHelper():
     def getIdFromMentionedUser(user_mentionned: str):
         """
         Get the user id from the user mentionned string
@@ -43,7 +43,7 @@ class DiscordHelper():
         for i in range(event["capacity"]):
             player = "- "
             if i < len(players):
-                player += players[i]
+                player += f"<@{players[i].id}>"
             players_text += player + "\n"
 
         guides_urls_md = "**Guides**\n"
@@ -53,7 +53,7 @@ class DiscordHelper():
 
         embed = discord.Embed(
             title=f"{event['tier']} : {event['type']} - {event['name']}",
-            description=f"{ilvl_text} \n {date_text} \n\n {players_text} \n\n guides_urls_md",
+            description=f"{ilvl_text} \n {date_text} \n\n {players_text} \n\n {guides_urls_md}",
             # Pycord provides a class with default colors you can choose from
             color=color,
         )
@@ -76,3 +76,18 @@ class DiscordHelper():
 
         embed.set_author(name=author, icon_url=author.avatar)
         return embed
+
+    async def create_embed_thread_and_add_players(event: object, players: list, date: str, ctx: discord.ext.commands.Context, interact: discord.Interaction):
+        embed = DiscordGroupHelper.get_embed_event_group(
+            event=event, players=players, date=date, author=ctx.author)
+
+        await interact.edit_original_message(content="", embed=embed)
+
+        # Getting the inital message that the bot sent to make a thread from it
+        msg = await interact.original_message()
+        # Thread creation
+        thread = await ctx.channel.create_thread(name=event["tier"] + " : " + event["name"], message=msg, auto_archive_duration=1440)
+
+        # Adding the players to the thread
+        for user in players:
+            await thread.add_user(user=user)

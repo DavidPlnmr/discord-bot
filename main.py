@@ -5,11 +5,12 @@ Date : 2022-04-16
 Brief : This is the main file of the bot. It contains all the commands and the bot's main loop.
 Description : Bot to help people to create raid groups.
 """
+from operator import contains
 import discord
 from discord.ext import commands
 import os  # default module
 from dotenv import load_dotenv
-from discord_helper import DiscordHelper
+from discord_helper import DiscordGroupHelper
 import logging
 import json
 
@@ -68,16 +69,15 @@ async def edit_msg_and_wait_msg_from_same_user(msg: discord.Interaction, respons
 @commands.has_role("Organisation Events")
 # Use any role if multiple roles are needed
 # @commands.has_any_role(constants.ROLE_NAME)
-async def create_group(ctx, event_id: int):
+async def create_group(ctx, event_id: discord.Option(
+                       int, "Give me a number",
+                       # list of events to display
+                       choices=[discord.OptionChoice(name=f"{event['tier']} - {event['name']}", value=event["id"]) for event in events])):
+
     logging.info(f"{ctx.author} asked to create a group for event {event_id}")
+
     # Get the event from the event id
-    try:
-        event = next(event for event in events if event["id"] == int(event_id))
-    except StopIteration:
-        # Saying at the user that
-        await ctx.respond("Event non trouvé. `/events_available` pour voir la liste des évenements disponibles")
-        logging.error(f"{ctx.author} specified an event that doesn't exist")
-        return
+    event = next(event for event in events if event["id"] == int(event_id))
 
     # Get the response of the user.
     # We keep the interact var because we want to edit the message later
@@ -87,64 +87,61 @@ async def create_group(ctx, event_id: int):
     date = response.content
     await response.delete()
 
-    response = await edit_msg_and_wait_msg_from_same_user(interact, 'Merci de spécifier les **joueur à ajouter au groupe**. \n**Exemple** : @<Joueur1> : <Classe>, @<Joueur2> : <Classe>, ...', ctx)
+    response = await edit_msg_and_wait_msg_from_same_user(interact, 'Merci de spécifier les **joueurs à ajouter au groupe**. \n**Exemple** : @<Joueur1> : <Classe>, @<Joueur2> : <Classe>, ...', ctx)
 
     # Get the players from the response
-    players = response.content.split(', ')
+    input_user = response.content
+    players = input_user.split(', ')
+    await response.delete()
 
     # Checking if the capacity has been passed
     if len(players) > event["capacity"]:
         await interact.edit_original_message(content="Vous ne pouvez pas ajouter plus de joueurs que la capacité du groupe")
         logging.error(
-            f"{ctx.author} tried to add more players than the capacity. Input : {response.content}")
+            f"{ctx.author} tried to add more players than the capacity. Input : {input_user}")
         return
 
     # Get players id
+
     players_id = []
     for player in players:
-        players_id.append(DiscordHelper.getIdFromMentionedUser(player))
+        players_id.append(DiscordGroupHelper.getIdFromMentionedUser(player))
 
     # Checking if there is duplicate elements
     if len(players_id) != len(set(players_id)):
         await interact.edit_original_message(content="Vous avez spécifié des joueurs en double")
         logging.error(
-            f"{ctx.author} specified duplicate players. Input : {response.content}")
+            f"{ctx.author} specified duplicate players. Input : {input_user}")
         return
 
     # Get players object
     # Use to add them in the thread later
     try:
-        players_object = await DiscordHelper.getUsersObjectsFromUsersIds(players_id, bot)
+        players_object = await DiscordGroupHelper.getUsersObjectsFromUsersIds(players_id, bot)
     except Exception as e:
         await interact.edit_original_message(content="Vous avez spécifié un joueur inconnu")
         logging.error(
-            f"{ctx.author} specified an unknown player. Input : {response.content}")
+            f"{ctx.author} specified an unknown player. Input : {input_user}")
         return
 
-    await response.delete()
+    if contains(players_object, None):
+        await interact.edit_original_message(content="Vous ne pouvez pas ajouter un rôle au groupe.")
+        logging.error(
+            f"{ctx.author} tried to add a role. Input : {input_user}")
+        return
 
-    embed = DiscordHelper.get_embed_event_group(
-        event=event, players=players, date=date, author=ctx.author)
+    await DiscordGroupHelper.create_embed_thread_and_add_players(event=event, players=players_object, date=date, ctx=ctx, interact=interact)
 
-    await interact.edit_original_message(content="", embed=embed)
-
-    # Getting the inital message that the bot sent to make a thread from it
-    msg = await interact.original_message()
-    # Thread creation
-    thread = await ctx.channel.create_thread(name=event["tier"] + " : " + event["name"], message=msg, auto_archive_duration=1440)
-
-    # Adding the players to the thread
-    for user in players_object:
-        await thread.add_user(user=user)
     logging.info(
         f"{ctx.author} created a group for event {event_id} with players {players}")
 
 
-@bot.slash_command(name="events_available", description="Montre la liste des évenements disponibles")
+@ bot.slash_command(name="events_available", description="Montre la liste des évenements disponibles")
 async def events_available(ctx):
-    embed = DiscordHelper.get_embed_events_available(
+    embed = DiscordGroupHelper.get_embed_events_available(
         events=events, author=ctx.author)
     await ctx.respond("", embed=embed)
     pass
+
 
 bot.run(os.getenv('TOKEN'))  # run the bot with the token
