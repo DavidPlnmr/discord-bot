@@ -91,11 +91,11 @@ async def create_group(ctx, event_id: discord.Option(
 
     # Get the players from the response
     input_user = response.content
-    players = input_user.split(', ')
+    players_input = input_user.split(', ')
     await response.delete()
 
     # Checking if the capacity has been passed
-    if len(players) > event["capacity"]:
+    if len(players_input) > event["capacity"]:
         await interact.edit_original_message(content="Vous ne pouvez pas ajouter plus de joueurs que la capacité du groupe")
         logging.error(
             f"{ctx.author} tried to add more players than the capacity. Input : {input_user}")
@@ -104,7 +104,7 @@ async def create_group(ctx, event_id: discord.Option(
     # Get players id
 
     players_id = []
-    for player in players:
+    for player in players_input:
         players_id.append(DiscordGroupHelper.getIdFromMentionedUser(player))
 
     # Checking if there is duplicate elements
@@ -117,26 +117,26 @@ async def create_group(ctx, event_id: discord.Option(
     # Get players object
     # Use to add them in the thread later
     try:
-        players_object = await DiscordGroupHelper.getUsersObjectsFromUsersIds(players_id, bot)
+        players_objects = await DiscordGroupHelper.getUsersObjectsFromUsersIds(players_id, bot)
     except Exception as e:
         await interact.edit_original_message(content="Vous avez spécifié un joueur inconnu")
         logging.error(
             f"{ctx.author} specified an unknown player. Input : {input_user}")
         return
 
-    if contains(players_object, None):
+    if contains(players_objects, None):
         await interact.edit_original_message(content="Vous ne pouvez pas ajouter un rôle au groupe.")
         logging.error(
             f"{ctx.author} tried to add a role. Input : {input_user}")
         return
 
-    await DiscordGroupHelper.create_embed_thread_and_add_players(event=event, players=players_object, date=date, ctx=ctx, interact=interact)
+    await DiscordGroupHelper.create_embed_thread_and_add_players(event=event, players_show_text=players_input, players_objects=players_objects, date=date, ctx=ctx, interact=interact)
 
     logging.info(
-        f"{ctx.author} created a group for event {event_id} with players {players}")
+        f"{ctx.author} created a group for event {event_id} with players {players_input}")
 
 
-@ bot.slash_command(name="events_available", description="Montre la liste des évenements disponibles")
+@bot.slash_command(name="events_available", description="Montre la liste des évenements disponibles")
 async def events_available(ctx):
     embed = DiscordGroupHelper.get_embed_events_available(
         events=events, author=ctx.author)

@@ -30,7 +30,7 @@ class DiscordGroupHelper():
         return users_objects
         pass
 
-    def get_embed_event_group(event: object, color: int = discord.Colour.blurple(), players: list = None, date: str = None, author: discord.Member = None):
+    def get_embed_event_group(event: object, color: int = discord.Colour.blurple(), players_show_text: list = None, players_objects: list = None, date: str = None, author: discord.Member = None):
         """
         Get the embed object
         """
@@ -42,8 +42,8 @@ class DiscordGroupHelper():
         players_text = ":mage: **Membres**\n"
         for i in range(event["capacity"]):
             player = "- "
-            if i < len(players):
-                player += f"<@{players[i].id}>"
+            if i < len(players_objects):
+                player += f"{players_show_text[i]}"
             players_text += player + "\n"
 
         guides_urls_md = "**Guides**\n"
@@ -77,9 +77,9 @@ class DiscordGroupHelper():
         embed.set_author(name=author, icon_url=author.avatar)
         return embed
 
-    async def create_embed_thread_and_add_players(event: object, players: list, date: str, ctx: discord.ext.commands.Context, interact: discord.Interaction):
+    async def create_embed_thread_and_add_players(event: object, players_show_text: list, players_objects: list, date: str, ctx: discord.ext.commands.Context, interact: discord.Interaction):
         embed = DiscordGroupHelper.get_embed_event_group(
-            event=event, players=players, date=date, author=ctx.author)
+            event=event, players_show_text=players_show_text, players_objects=players_objects, date=date, author=ctx.author)
 
         await interact.edit_original_message(content="", embed=embed)
 
@@ -89,5 +89,5 @@ class DiscordGroupHelper():
         thread = await ctx.channel.create_thread(name=event["tier"] + " : " + event["name"], message=msg, auto_archive_duration=1440)
 
         # Adding the players to the thread
-        for user in players:
+        for user in players_objects:
             await thread.add_user(user=user)
