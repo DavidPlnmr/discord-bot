@@ -53,7 +53,7 @@ async def ping(ctx):
 
 
 async def respond_and_wait_msg_from_same_user(response: str, ctx: discord.ext.commands.Context):
-    interact = await ctx.respond(response)
+    interact = await ctx.respond(response, ephemeral=True)
     response = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
     return interact, response
 
@@ -85,7 +85,13 @@ async def create_group(ctx, event_id: discord.Option(
 
     # Get the date from the response
     date = response.content
+
     await response.delete()
+
+    # check if the user want to cancel the command
+    if response.content == "cancel":
+        await edit_msg_and_wait_msg_from_same_user(interact, 'Annulation', ctx)
+        return
 
     response = await edit_msg_and_wait_msg_from_same_user(interact, 'Merci de spécifier les **joueurs à ajouter au groupe**. \n**Exemple** : @<Joueur1> : <Classe>, @<Joueur2> : <Classe>, ...', ctx)
 
@@ -93,6 +99,11 @@ async def create_group(ctx, event_id: discord.Option(
     input_user = response.content
     players_input = input_user.split(', ')
     await response.delete()
+
+    # check if the user want to cancel the command
+    if response.content == "cancel":
+        await edit_msg_and_wait_msg_from_same_user(interact, 'Annulation', ctx)
+        return
 
     # Checking if the capacity has been passed
     if len(players_input) > event["capacity"]:
