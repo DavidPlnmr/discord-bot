@@ -53,7 +53,7 @@ async def ping(ctx):
 
 
 async def respond_and_wait_msg_from_same_user(response: str, ctx: discord.ext.commands.Context):
-    interact = await ctx.respond(response, ephemeral=True)
+    interact = await ctx.respond(response)
     response = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
     return interact, response
 
